@@ -5,14 +5,13 @@ def carica_da_file(file_path):
     album={ }
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
-            lettore=csv.DictReader(file)
-
+            lettore=csv.DictReader(file,skipinitialspace=True)
             for riga in lettore:
                 anno=int(riga['anno'])
 
                 #se non esiste lo creo
                 if anno not in album:
-                    album(anno)=[ ]
+                    album[anno]=[ ]
                 #creo foto
                 foto={
                     'codice':riga['codice'],
@@ -71,7 +70,7 @@ def cerca_foto(album, codice):
     for anno in album:
         for foto in album[anno]:
             if foto['codice']==codice:
-               return foto['codice']+','+foto['titolo']+','+foto['autore']+','+foto['mese']+','+foto['anno']
+               return foto['codice']+','+foto['titolo']+','+foto['autore']+','+str(foto['mese'])+','+str(foto['anno'])
     return None
 
 
@@ -79,6 +78,17 @@ def cerca_foto(album, codice):
 def elenco_foto_anno_per_titolo(album, anno):
     """Ordina i titoli delle foto di un dato anno in ordine alfabetico"""
     # TODO
+    titolianno=[]
+    for anno_album in album:
+        if anno_album==anno:
+            for foto in album[anno_album]:
+                titolianno.append(foto['titolo'])
+    if titolianno==[]:
+        return None
+    titolianno.sort()
+    return titolianno
+
+
 
 
 def main():
