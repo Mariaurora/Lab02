@@ -1,16 +1,79 @@
+import csv
 def carica_da_file(file_path):
     """Carica le foto dal file, creando un nuovo anno ogni volta che compare per la prima volta"""
     # TODO
+    album={ }
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            lettore=csv.DictReader(file)
+
+            for riga in lettore:
+                anno=int(riga['anno'])
+
+                #se non esiste lo creo
+                if anno not in album:
+                    album(anno)=[ ]
+                #creo foto
+                foto={
+                    'codice':riga['codice'],
+                    'titolo':riga['titolo'],
+                    'autore':riga['autore'],
+                    'mese':int(riga['mese']),
+                    'anno':anno
+                }
+                album[anno].append(foto)
+        return album
+    except FileNotFoundError:
+        return None
 
 
 def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
     """Aggiunge una foto all'album, creando l'anno al volo se non è ancora presente"""
     # TODO
+    # verifica mese
+    if mese < 1 or mese > 12:
+        return None
+    #controllo se il codice c'è già
+    for anno_album in album:
+        for foto in album[anno_album]:
+            if foto['codice']==codice:
+                return None
+    #controllo che il file esiste
+    try:
+        file=open(file_path,'r',encoding='utf-8')
+        file.close()
+    except FileNotFoundError:
+        return None
+    #creo foto
+    foto={
+        'codice':codice,
+        'titolo':titolo,
+        'autore':autore,
+        'mese':mese,
+        'anno':anno
+    }
+    #se l'anno non esiste lo creo
+    if anno not in album:
+        album[anno]=[ ]
+    #aggiungo la foto
+    album[anno].append(foto)
+    #aggiungo foto al file
+    file=open(file_path,'a',encoding='utf-8')
+    file.write(codice+','+titolo+','+autore+','+mese+','+annno+'\n')
+    file.close()
+    return foto
+
 
 
 def cerca_foto(album, codice):
     """Cerca una foto nell'album dato il codice"""
     # TODO
+    for anno in album:
+        for foto in album[anno]:
+            if foto['codice']==codice:
+               return foto['codice']+','+foto['titolo']+','+foto['autore']+','+foto['mese']+','+foto['anno']
+    return None
+
 
 
 def elenco_foto_anno_per_titolo(album, anno):
