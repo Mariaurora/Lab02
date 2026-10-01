@@ -5,7 +5,13 @@ def carica_da_file(file_path):
     album={ }
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
-            lettore=csv.DictReader(file,skipinitialspace=True)
+            lettore=csv.DictReader(file)
+            #tolgo gli spazi dai nomi della prima riga (le chiavi)
+            nomi = []
+            for nome in lettore.fieldnames:
+                nome = nome.strip()
+                nomi.append(nome)
+            lettore.fieldnames = nomi
             for riga in lettore:
                 anno=int(riga['anno'])
 
@@ -22,6 +28,7 @@ def carica_da_file(file_path):
                 }
                 album[anno].append(foto)
         return album
+
     except FileNotFoundError:
         return None
 
@@ -58,7 +65,7 @@ def aggiungi_foto(album, codice, titolo, autore, mese, anno, file_path):
     album[anno].append(foto)
     #aggiungo foto al file
     file=open(file_path,'a',encoding='utf-8')
-    file.write(codice+','+titolo+','+autore+','+mese+','+annno+'\n')
+    file.write(codice+','+titolo+','+autore+','+mese+','+anno+'\n')
     file.close()
     return foto
 
